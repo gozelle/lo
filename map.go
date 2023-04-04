@@ -2,13 +2,15 @@ package lo
 
 // Keys creates an array of the map keys.
 // Play: https://go.dev/play/p/Uu11fHASqrU
-func Keys[K comparable, V any](in map[K]V) []K {
+func Keys[K comparable, V any](in ...map[K]V) []K {
 	result := make([]K, 0, len(in))
-
-	for k := range in {
-		result = append(result, k)
+	
+	for _, m := range in {
+		for k := range m {
+			result = append(result, k)
+		}
 	}
-
+	
 	return result
 }
 
@@ -16,11 +18,11 @@ func Keys[K comparable, V any](in map[K]V) []K {
 // Play: https://go.dev/play/p/nnRTQkzQfF6
 func Values[K comparable, V any](in map[K]V) []V {
 	result := make([]V, 0, len(in))
-
+	
 	for _, v := range in {
 		result = append(result, v)
 	}
-
+	
 	return result
 }
 
@@ -109,14 +111,14 @@ func OmitByValues[K comparable, V comparable](in map[K]V, values []V) map[K]V {
 // Play:
 func Entries[K comparable, V any](in map[K]V) []Entry[K, V] {
 	entries := make([]Entry[K, V], 0, len(in))
-
+	
 	for k, v := range in {
 		entries = append(entries, Entry[K, V]{
 			Key:   k,
 			Value: v,
 		})
 	}
-
+	
 	return entries
 }
 
@@ -131,11 +133,11 @@ func ToPairs[K comparable, V any](in map[K]V) []Entry[K, V] {
 // Play: https://go.dev/play/p/oIr5KHFGCEN
 func FromEntries[K comparable, V any](entries []Entry[K, V]) map[K]V {
 	out := make(map[K]V, len(entries))
-
+	
 	for _, v := range entries {
 		out[v.Key] = v.Value
 	}
-
+	
 	return out
 }
 
@@ -152,11 +154,11 @@ func FromPairs[K comparable, V any](entries []Entry[K, V]) map[K]V {
 // Play: https://go.dev/play/p/rFQ4rak6iA1
 func Invert[K comparable, V comparable](in map[K]V) map[V]K {
 	out := make(map[V]K, len(in))
-
+	
 	for k, v := range in {
 		out[v] = k
 	}
-
+	
 	return out
 }
 
@@ -164,13 +166,13 @@ func Invert[K comparable, V comparable](in map[K]V) map[V]K {
 // Play: https://go.dev/play/p/VhwfJOyxf5o
 func Assign[K comparable, V any](maps ...map[K]V) map[K]V {
 	out := map[K]V{}
-
+	
 	for _, m := range maps {
 		for k, v := range m {
 			out[k] = v
 		}
 	}
-
+	
 	return out
 }
 
@@ -178,11 +180,11 @@ func Assign[K comparable, V any](maps ...map[K]V) map[K]V {
 // Play: https://go.dev/play/p/9_4WPIqOetJ
 func MapKeys[K comparable, V any, R comparable](in map[K]V, iteratee func(value V, key K) R) map[R]V {
 	result := make(map[R]V, len(in))
-
+	
 	for k, v := range in {
 		result[iteratee(v, k)] = v
 	}
-
+	
 	return result
 }
 
@@ -190,11 +192,11 @@ func MapKeys[K comparable, V any, R comparable](in map[K]V, iteratee func(value 
 // Play: https://go.dev/play/p/T_8xAfvcf0W
 func MapValues[K comparable, V any, R any](in map[K]V, iteratee func(value V, key K) R) map[K]R {
 	result := make(map[K]R, len(in))
-
+	
 	for k, v := range in {
 		result[k] = iteratee(v, k)
 	}
-
+	
 	return result
 }
 
@@ -202,12 +204,12 @@ func MapValues[K comparable, V any, R any](in map[K]V, iteratee func(value V, ke
 // Play: https://go.dev/play/p/VuvNQzxKimT
 func MapEntries[K1 comparable, V1 any, K2 comparable, V2 any](in map[K1]V1, iteratee func(key K1, value V1) (K2, V2)) map[K2]V2 {
 	result := make(map[K2]V2, len(in))
-
+	
 	for k1, v1 := range in {
 		k2, v2 := iteratee(k1, v1)
 		result[k2] = v2
 	}
-
+	
 	return result
 }
 
@@ -215,10 +217,10 @@ func MapEntries[K1 comparable, V1 any, K2 comparable, V2 any](in map[K1]V1, iter
 // Play: https://go.dev/play/p/ZuiCZpDt6LD
 func MapToSlice[K comparable, V any, R any](in map[K]V, iteratee func(key K, value V) R) []R {
 	result := make([]R, 0, len(in))
-
+	
 	for k, v := range in {
 		result = append(result, iteratee(k, v))
 	}
-
+	
 	return result
 }
